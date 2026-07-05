@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XChat 官方站 - 轻量高效的 IRC 通讯工具</title>
+    <meta name="description" content="XChat 是一款轻量、高度可定制的 IRC 通讯客户端，全面支持 Windows、Linux、Mac 多平台运行。具备脚本自动化扩展与纯净交互体验，为技术爱好者提供高效的协作沟通环境。">
+    <meta name="keywords" content="xchat, xchat官方, xchat网页版, xchat IRC客户端, xchat多平台, xchat脚本扩展, xchat轻量通讯">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; line-height: 1.6; color: #1a1a1a; background: #f5f5f4; -webkit-font-smoothing: antialiased; }
+        a { text-decoration: none; }
+        
+        /* Header */
+        .header { position: fixed; top: 0; left: 0; right: 0; background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .header-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand-icon { width: 32px; height: 32px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .brand-name { font-size: 17px; font-weight: 700; color: #1a1a1a; letter-spacing: -0.3px; }
+        .nav-links { display: flex; gap: 28px; align-items: center; }
+        .nav-links a { color: #666; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: #1a1a1a; }
+        .nav-btn { padding: 8px 20px; background: #1a1a1a; color: #fff !important; border-radius: 20px; font-size: 13px !important; font-weight: 600 !important; }
+        
+        /* Hero */
+        .hero { padding: 140px 24px 80px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+        .hero::after { content: ''; position: absolute; bottom: -50px; left: -50px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+        .hero-inner { max-width: 800px; margin: 0 auto; position: relative; z-index: 1; }
+        .hero-tag { display: inline-block; padding: 6px 16px; background: rgba(0,0,0,0.05); border-radius: 20px; font-size: 13px; color: #666; margin-bottom: 24px; font-weight: 500; }
+        .hero h1 { font-size: 56px; font-weight: 800; color: #1a1a1a; margin-bottom: 20px; letter-spacing: -2px; line-height: 1.15; }
+        .hero .subtitle { font-size: 18px; color: #666; margin-bottom: 16px; font-weight: 400; line-height: 1.7; max-width: 640px; margin-left: auto; margin-right: auto; }
+        .test-notice { display: inline-block; padding: 6px 14px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); border-radius: 6px; color: #ef4444; font-size: 13px; font-weight: 600; margin-bottom: 36px; }
+        .cta-wrapper { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 60px; }
+        .btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 16px 44px; background: #1a1a1a; color: #fff; border-radius: 28px; font-size: 16px; font-weight: 600; transition: all 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); background: #000; }
+        .btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 16px 36px; background: transparent; color: #1a1a1a; border: 1.5px solid #1a1a1a; border-radius: 28px; font-size: 16px; font-weight: 600; transition: all 0.3s; }
+        .btn-secondary:hover { background: rgba(0,0,0,0.05); }
+        .domain-notice { padding: 12px 18px; background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; color: #b45309; font-size: 13px; font-weight: 500; max-width: 360px; text-align: left; line-height: 1.5; }
+        
+        /* Platform Bar */
+        .platform-bar { max-width: 700px; margin: 0 auto 80px; background: #fff; border-radius: 20px; padding: 20px 32px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+        .platform-item { display: flex; align-items: center; gap: 10px; color: #666; font-size: 14px; font-weight: 500; }
+        .platform-item .icon { font-size: 20px; }
+        .platform-divider { width: 1px; height: 24px; background: #e5e5e5; }
+        
+        /* Features */
+        .features { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+        .section-head { text-align: center; margin-bottom: 60px; }
+        .section-head h2 { font-size: 36px; font-weight: 700; color: #1a1a1a; margin-bottom: 16px; letter-spacing: -0.8px; }
+        .section-head p { font-size: 16px; color: #666; max-width: 560px; margin: 0 auto; }
+        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .feature-card { background: #fff; border-radius: 20px; padding: 36px 28px; transition: all 0.3s; border: 1px solid transparent; }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.06); }
+        .icon-wrap { width: 48px; height: 48px; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .icon-wrap.green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .icon-wrap.orange { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .feature-card h3 { font-size: 18px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+        .feature-card p { font-size: 14px; color: #666; line-height: 1.7; }
+        
+        /* Use Cases */
+        .use-cases { padding: 80px 24px; background: #fff; border-top: 1px solid rgba(0,0,0,0.04); border-bottom: 1px solid rgba(0,0,0,0.04); }
+        .use-cases-inner { max-width: 1100px; margin: 0 auto; }
+        .use-case-row { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; margin-bottom: 80px; }
+        .use-case-row:last-child { margin-bottom: 0; }
+        .use-case-row.reverse .use-case-text { order: 2; }
+        .use-case-row.reverse .use-case-visual { order: 1; }
+        .use-case-text h3 { font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 16px; letter-spacing: -0.5px; }
+        .use-case-text p { font-size: 16px; color: #666; line-height: 1.7; margin-bottom: 20px; }
+        .use-case-text ul { list-style: none; }
+        .use-case-text li { padding: 8px 0; color: #555; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+        .use-case-text li::before { content: '✓'; color: #10b981; font-weight: 700; font-size: 14px; }
+        .use-case-visual { background: #f5f5f4; border-radius: 16px; padding: 40px; display: flex; align-items: center; justify-content: center; min-height: 280px; }
+        .mockup { width: 100%; max-width: 380px; background: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .mockup-header { padding: 12px 16px; background: #fafafa; border-bottom: 1px solid #eee; display: flex; gap: 6px; }
+        .mockup-dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; }
+        .mockup-dot:nth-child(1) { background: #ff5f57; }
+        .mockup-dot:nth-child(2) { background: #febc2e; }
+        .mockup-dot:nth-child(3) { background: #28c840; }
+        .mockup-body { padding: 20px; font-family: 'Monaco', 'Menlo', monospace; font-size: 12px; color: #666; line-height: 1.8; }
+        .mockup-line { margin-bottom: 6px; }
+        .mockup-line .nick { color: #3b82f6; font-weight: 600; }
+        .mockup-line .sys { color: #999; font-style: italic; }
+        
+        /* CTA Section */
+        .cta-section { padding: 100px 24px; text-align: center; }
+        .cta-section h2 { font-size: 36px; font-weight: 700; color: #1a1a1a; margin-bottom: 16px; letter-spacing: -0.8px; }
+        .cta-section p { font-size: 17px; color: #666; margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto; }
+        
+        /* Footer */
+        .footer { padding: 48px 24px 32px; background: #fff; border-top: 1px solid rgba(0,0,0,0.06); }
+        .footer-inner { max-width: 1100px; margin: 0 auto; }
+        .footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; flex-wrap: wrap; gap: 32px; }
+        .footer-brand p { font-size: 14px; color: #999; max-width: 280px; line-height: 1.7; margin-top: 12px; }
+        .footer-links { display: flex; gap: 48px; }
+        .footer-col h5 { color: #1a1a1a; font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 10px; }
+        .footer-col a { color: #999; font-size: 13px; transition: color 0.2s; }
+        .footer-col a:hover { color: #666; }
+        .footer-bottom { padding-top: 24px; border-top: 1px solid #eee; text-align: center; font-size: 13px; color: #999; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 38px; }
+            .hero .subtitle { font-size: 16px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .use-case-row { grid-template-columns: 1fr; gap: 32px; }
+            .use-case-row.reverse .use-case-text { order: 1; }
+            .use-case-row.reverse .use-case-visual { order: 2; }
+            .nav-links a:not(.nav-btn) { display: none; }
+            .platform-bar { flex-wrap: wrap; gap: 16px; padding: 16px 20px; }
+            .platform-divider { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+                        <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="#fff"/>
+                    </svg>
+                </div>
+                <span class="brand-name">XChat</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#features">功能特性</a>
+                <a href="#usecases">使用场景</a>
+                <a href="#faq">常见问题</a>
+                <a href="https://mi.aliyun.com/domain-detail?domainCartTradeParams=dr_29379033_1776701218100&domainName=xchatweb.cn&orgType=&productType=2&_v_=47edc66742fe36fc0a839ea5700b8cd5" class="nav-btn">立即获取</a>
+            </nav>
+        </div>
+    </div>
+
+    <main>
+        <section class="hero">
+            <div class="hero-inner">
+                <div class="hero-tag">IRC 交流的经典选择</div>
+                <h1>XChat 官方站</h1>
+                <p class="subtitle">XChat 提供高效、轻量且可高度自定义的 IRC 聊天体验。无论是技术支持、代码协作还是全球社区交流，XChat 都是开发者与极客首选的沟通工具。</p>
+                <div class="test-notice">本页为测试页</div>
+                
+                <div class="cta-wrapper">
+                    <a href="https://mi.aliyun.com/domain-detail?domainCartTradeParams=dr_29379033_1776701218100&domainName=xchatweb.cn&orgType=&productType=2&_v_=47edc66742fe36fc0a839ea5700b8cd5" class="btn-primary">
+                        立即获取
+                    </a>
+                    <a href="#features" class="btn-secondary">
+                        了解更多
+                    </a>
+                    <div class="domain-notice">本站域名（xchatweb.cn）便宜出售中，点击跳转</div>
+                </div>
+
+                <div class="platform-bar">
+                    <div class="platform-item">
+                        <span class="icon">🪟</span>
+                        <span>Windows 版</span>
+                    </div>
+                    <div class="platform-divider"></div>
+                    <div class="platform-item">
+                        <span class="icon">🍎</span>
+                        <span>macOS 版</span>
+                    </div>
+                    <div class="platform-divider"></div>
+                    <div class="platform-item">
+                        <span class="icon">🐧</span>
+                        <span>Linux 发行版</span>
+                    </div>
+                    <div class="platform-divider"></div>
+                    <div class="platform-item">
+                        <span class="icon">⚙️</span>
+                        <span>BSD 支持</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="section-head">
+                <h2>高效、稳定的连接体验</h2>
+                <p>XChat 不仅仅是一个聊天客户端，它是连接全球开源生态与极客精神的纽带。我们专注于性能与可靠性，让你在海量信息流中保持专注。</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon-wrap">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                    </div>
+                    <h3>轻量高效</h3>
+                    <p>极低的内存占用与 CPU 消耗，即使同时连接数十个频道也能保持流畅运行。专为追求性能的用户设计。</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon-wrap green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <h3>高度可定制</h3>
+                    <p>丰富的脚本扩展与插件生态，支持 Perl、Python、Tcl 等多种脚本语言，让你完全掌控自己的聊天体验。</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="icon-wrap orange">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                            <line x1="8" y1="21" x2="16" y2="21"/>
+                            <line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                    </div>
+                    <h3>多平台支持</h3>
+                    <p>原生支持 Windows、macOS、Linux、BSD 等主流操作系统，在你熟悉的任何平台上都能获得一致的体验。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="usecases" class="use-cases">
+            <div class="use-cases-inner">
+                <div class="use-case-row">
+                    <div class="use-case-text">
+                        <h3>开发者社区协作</h3>
+                        <p>全球最大的开源项目都在 IRC 上进行实时讨论。加入你感兴趣的频道，与核心开发者面对面交流。</p>
+                        <ul>
+                            <li>实时技术支持与问题排查</li>
+                            <li>参与开源项目贡献讨论</li>
+                            <li>获取第一手技术资讯</li>
+                            <li>建立行业人脉网络</li>
+                        </ul>
+                    </div>
+                    <div class="use-case-visual">
+                        <div class="mockup">
+                            <div class="mockup-header">
+                                <div class="mockup-dot"></div>
+                                <div class="mockup-dot"></div>
+                                <div class="mockup-dot"></div>
+                            </div>
+                            <div class="mockup-body">
+                                <div class="mockup-line"><span class="sys">--- #linux 频道 ---</span></div>
+                                <div class="mockup-line"><span class="nick">alice:</span> 有人遇到过内核 5.15 的驱动问题吗？</div>
+                                <div class="mockup-line"><span class="nick">bob:</span> 具体是什么设备？</div>
+                                <div class="mockup-line"><span class="nick">alice:</span> RTL8821CE 无线网卡</div>
+                                <div class="mockup-line"><span class="nick">bob:</span> 试试这个 patch，我上周刚提交的</div>
+                                <div class="mockup-line"><span class="sys">alice 已加入频道</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="use-case-row reverse">
+                    <div class="use-case-text">
+                        <h3>自动化脚本扩展</h3>
+                        <p>强大的脚本引擎让你可以自动化几乎所有操作。从消息过滤到频道管理，从通知提醒到数据统计，一切尽在掌控。</p>
+                        <ul>
+                            <li>智能消息过滤与高亮</li>
+                            <li>自动回复与机器人</li>
+                            <li>频道日志与统计分析</li>
+                            <li>第三方服务集成</li>
+                        </ul>
+                    </div>
+                    <div class="use-case-visual">
+                        <div class="mockup">
+                            <div class="mockup-header">
+                                <div class="mockup-dot"></div>
+                                <div class="mockup-dot"></div>
+                                <div class="mockup-dot"></div>
+                            </div>
+                            <div class="mockup-body">
+                                <div class="mockup-line"><span class="sys">-- 脚本编辑器 --</span></div>
+                                <div class="mockup-line">on event {</div>
+                                <div class="mockup-line">&nbsp;&nbsp;if (keyword) {</div>
+                                <div class="mockup-line">&nbsp;&nbsp;&nbsp;&nbsp;notify();</div>
+                                <div class="mockup-line">&nbsp;&nbsp;&nbsp;&nbsp;highlight();</div>
+                                <div class="mockup-line">&nbsp;&nbsp;}</div>
+                                <div class="mockup-line">}</div>
+                                <div class="mockup-line"><span class="sys">已加载 12 个脚本</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>开始你的极客之旅</h2>
+            <p>立即获取 XChat，加入全球最大的技术社区，与百万开发者一起交流成长。</p>
+            
+            <div class="cta-wrapper">
+                <a href="https://mi.aliyun.com/domain-detail?domainCartTradeParams=dr_29379033_1776701218100&domainName=xchatweb.cn&orgType=&productType=2&_v_=47edc66742fe36fc0a839ea5700b8cd5" class="btn-primary">
+                    立即获取
+                </a>
+                <div class="domain-notice">本站域名（xchatweb.cn）便宜出售中，点击跳转</div>
+            </div>
+        </section>
+    </main>
+
+    <div class="footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand">
+                        <div class="brand-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+                                <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="#fff"/>
+                            </svg>
+                        </div>
+                        <span class="brand-name">XChat</span>
+                    </div>
+                    <p>轻量、高效、可定制的 IRC 通讯客户端，为开发者与极客打造的经典聊天工具。</p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h5>产品</h5>
+                        <ul>
+                            <li><a href="#">功能介绍</a></li>
+                            <li><a href="#">更新日志</a></li>
+                            <li><a href="#">脚本生态</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h5>支持</h5>
+                        <ul>
+                            <li><a href="#">帮助文档</a></li>
+                            <li><a href="#">常见问题</a></li>
+                            <li><a href="#">社区论坛</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h5>资源</h5>
+                        <ul>
+                            <li><a href="#">开源地址</a></li>
+                            <li><a href="#">插件市场</a></li>
+                            <li><a href="#">开发文档</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 XChat Web. 保留所有权利。</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
